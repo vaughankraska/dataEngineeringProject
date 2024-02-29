@@ -38,7 +38,7 @@ $ docker run -h spark-master -p 3000:8080 -d <image id>
                   | (Data Path, Logic)
                   V
          +-------------------+         +-----------------------+
-         | Spark Cluster      |         | HDFS Cluster with song data|
+         | Spark Cluster      |  <--->  | HDFS Cluster with song data|
          +-------------------+         +-----------------------+
                |
                | Spark Session Creation
