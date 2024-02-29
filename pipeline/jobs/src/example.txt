@@ -1,0 +1,6 @@
+This file doesn't do anything.
+
+I just put this here to register the directory as non-empty and show where we might put jobs files
+
+This source directory will be the job submission service container ie I am thinking we can have a container that actually
+submits certain tasks to spark and say time how long they take to run.
