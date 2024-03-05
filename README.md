@@ -3,16 +3,7 @@
 ## Dataset
 ```text
 Data:
-http://millionsongdataset.com/
-
-Description:
-http://millionsongdataset.com/pages/example-track-description/
-
-Full Data (280 GB):
-http://millionsongdataset.com/pages/getting-dataset
-
-Subset of data (1.8 GB):
-http://millionsongdataset.com/pages/getting-dataset#subset
+https://zenodo.org/records/1043504#.Wzt7PbhXryo
 
 ```
 #### Instructions for working locally
@@ -25,44 +16,26 @@ for spark:
 $ docker run -h spark-master -p 3000:8080 -d <image id>
 ```
 
-
-
-
-# How I am thinking this will work
+# Architecture
 ```text
-          +---------------------+
-          | Job Submission VM   |
-          +---------------------+
+          +-------------------------------+
+          | Spark Driver VM (submits jobs)|
+          +-------------------------------+
                   |
                   | Submit Spark Job
                   | (Data Path, Logic)
                   V
-         +-------------------+         +-----------------------+
-         | Spark Cluster      |  <--->  | HDFS Cluster with song data|
-         +-------------------+         +-----------------------+
+         +-------------------+         +-------------------------------+
+         | Spark Cluster      |  <--->  | HDFS Cluster with reddit data|
+         +-------------------+         +-------------------------------+
                |
                | Spark Session Creation
                V
           +---------+   +---------+   +---------+   +---------+
           |         |   |         |   |         |   |         |
-          | Executor |   | Executor |   | Executor |   | Executor |
+          | Worker  |   | Worker  |   | Worker  |   | Worker  |
           +---------+   +---------+   +---------+   +---------+
-                 |           |           |           |           |
-                 | Partition 1 | Partition 2 | Partition 3 | Partition N |
-                 | (In Memory) | (In Memory) | (In Memory) | (In Memory) |
-                 |           |           |           |           |
-                 V           V           V           V
-            +---------+   +---------+   +---------+   +---------+
-            |         |   |         |   |         |   |         |
-            | Executor |   | Executor |   | Executor |   | Executor |
-            +---------+   +---------+   +---------+   +---------+
-                 |
-                 | In-memory Processing
-                 V
-            +---------+   +---------+   +---------+   +---------+
-            |         |   |         |   |         |   |         |
-            | Executor |   | Executor |   | Executor |   | Executor |
-            +---------+   +---------+   +---------+   +---------+
+                 |           |           |           |         |
                  |
              Write Time Results (Back to HDFS or other storage)
 ```
