@@ -6,14 +6,37 @@ Data:
 https://zenodo.org/records/1043504#.Wzt7PbhXryo
 
 ```
-#### Instructions for working locally
-for file-system (and enter interactive terminal):
+## Instructions for working locally
+#### for file-system (and enter interactive terminal):
 ```bash
 docker run -it <image id of filesystem>
 ```
-for spark:
+
+#### for spark:
 ```bash
-$ docker run -h spark-master -p 3000:8080 -d <image id>
+cd pipeline/spark
+docker run -h spark-master -p 3000:8080 -d <image id>
+```
+
+#### for the whole pipeline:
+##### 
+- starting the whole pipeline
+```bash
+cd pipeline
+
+docker compose up
+```
+- submitting a example job (assumes the whole pipeline has been started and is running)
+```bash
+docker ps
+
+docker exec -it <spark-master container id> /bin/bash
+
+$SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi --master spark://spark-master:7077 $SPARK_HOME/examples/jars/spark-examples_2.12-3.5.1.jar
+```
+- cleaning up
+```bash
+docker compose down
 ```
 
 # Architecture
