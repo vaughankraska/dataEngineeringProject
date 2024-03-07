@@ -31,4 +31,3 @@ RUN /hadoop-3.3.6/bin/hdfs namenode -format && \
     /hadoop-3.3.6/bin/hdfs --daemon start datanode && \
     /hadoop-3.3.6/bin/hdfs dfs -mkdir -p /user/ubuntu && \
     /hadoop-3.3.6/bin/hdfs dfs -put corpus-webis-tldr-17.json /user/ubuntu
-
