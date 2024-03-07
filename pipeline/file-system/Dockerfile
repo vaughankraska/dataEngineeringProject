@@ -15,12 +15,20 @@ RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
     rm hadoop-3.3.6.tar.gz
 
 RUN wget https://github.com/osbo8060/hadoopfiles/archive/refs/heads/main.zip
-RUN unzip *.zip
+RUN unzip main.zip
+
+# Download DataSet
+RUN wget https://zenodo.org/records/1043504/files/corpus-webis-tldr-17.zip
+RUN unzip corpus-webis-tldr-17.zip
 
 # Copy modified configuration files into Hadoop configuration directory
 RUN mv hadoopfiles-main/core-site.xml /hadoop-3.3.6/etc/hadoop/core-site.xml
 RUN mv hadoopfiles-main/hdfs-site.xml /hadoop-3.3.6/etc/hadoop/hdfs-site.xml
-
+RUN rm *.zip
 # Format HDFS and start NameNode
 RUN /hadoop-3.3.6/bin/hdfs namenode -format && \
-    /hadoop-3.3.6/bin/hdfs --daemon start namenode
+    /hadoop-3.3.6/bin/hdfs --daemon start namenode && \
+    /hadoop-3.3.6/bin/hdfs --daemon start datanode && \
+    /hadoop-3.3.6/bin/hdfs dfs -mkdir -p /user/ubuntu && \
+    /hadoop-3.3.6/bin/hdfs dfs -put corpus-webis-tldr-17.json /user/ubuntu
+
