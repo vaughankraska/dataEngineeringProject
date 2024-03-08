@@ -35,6 +35,3 @@ RUN /hadoop-3.3.6/bin/hdfs namenode -format && \
 RUN rm *.json
 
 CMD /hadoop-3.3.6/bin/hdfs --daemon start namenode & /hadoop-3.3.6/bin/hdfs --daemon start datanode && tail -f /dev/null
-
-
-
