@@ -2,7 +2,8 @@ FROM ubuntu:22.04
 
 # Update and install required packages
 RUN apt-get update && apt-get -y upgrade && \
-    apt-get -y install openjdk-8-jre-headless wget unzip && \
+    apt-get -y install openjdk-8-jre-headless wget unzip && \ 
+    apt-get -y install net-tools && \
     rm -rf /var/lib/apt/lists/*
 
 # Setup Java environment
@@ -33,3 +34,4 @@ RUN /hadoop-3.3.6/bin/hdfs namenode -format && \
     /hadoop-3.3.6/bin/hdfs dfs -put corpus-webis-tldr-17.json /user/ubuntu
 
 RUN rm *.json
+

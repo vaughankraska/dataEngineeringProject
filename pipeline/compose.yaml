@@ -1,4 +1,22 @@
 services:
+  hdfs:
+    tty: true
+    build: file-system
+    container_name: hdfs
+    network_mode: "host"
+    privileged: true
+#    ports:
+ #     - "9000:9000"
+  #    - "9870:9870"
+    command:
+      - sh
+      - -c
+      - |
+        /hadoop-3.3.6/bin/hdfs --daemon start namenode &&
+        sleep 5 &&
+        /hadoop-3.3.6/bin/hdfs --daemon start datanode &&
+        tail -f /dev/null
+
   spark-master:
     build: spark
     container_name: spark-master
@@ -13,10 +31,11 @@ services:
     ports:
       - "8080:8080"
       - "7077:7077"
+    depends_on:
+      - hdfs
     command: spark/sbin/start-master.sh
   spark-worker:
     build: spark
-    #container_name: spark-worker # cannot set a container name because it will be replicated and needs a unique name for each container
     deploy:
       mode: replicated
       replicas: 3 # choose how many replicas we want for this
