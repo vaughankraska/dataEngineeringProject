@@ -3,19 +3,10 @@ services:
     tty: true
     build: file-system
     container_name: hdfs
-    network_mode: "host"
     privileged: true
-#    ports:
- #     - "9000:9000"
-  #    - "9870:9870"
-    command:
-      - sh
-      - -c
-      - |
-        /hadoop-3.3.6/bin/hdfs --daemon start namenode &&
-        sleep 5 &&
-        /hadoop-3.3.6/bin/hdfs --daemon start datanode &&
-        tail -f /dev/null
+    ports:
+      - "9000:9000"
+      - "9870:9870"
 
   spark-master:
     build: spark
