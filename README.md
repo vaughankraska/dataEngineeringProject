@@ -39,6 +39,27 @@ $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi --master 
 docker compose down
 ```
 
+# For submitting python scripts to VM's spark master:
+- On your local machine, set up port forwarding to the VM
+```bash
+ssh -i ~/path/to/your/ssh/dir/Group_17_project.pem -L 8080:localhost:8080 -L 9870:localhost:9870 -L 7077:localhost:7077 -L 9000:localhost:9000 ubuntu@130.238.28.94
+```
+- Start a python notebook and run something like this to create a session:
+```python
+from pyspark.sql import SQLContext, SparkSession
+from pyspark.sql.functions import *
+
+spark_session = SparkSession\
+        .builder\
+        .master("spark://localhost:7077") \
+        .appName("tessst")\
+        .config("spark.dynamicAllocation.enabled", True)\
+        .config("spark.dynamicAllocation.shuffleTracking.enabled",True)\
+        .config("spark.shuffle.service.enabled", False)\
+        .config("spark.dynamicAllocation.executorIdleTimeout","30s")\
+        .getOrCreate()
+```
+
 # Architecture
 ```text
           +-------------------------------+
