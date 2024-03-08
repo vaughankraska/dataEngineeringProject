@@ -22,8 +22,8 @@ RUN wget https://zenodo.org/records/1043504/files/corpus-webis-tldr-17.zip
 RUN unzip corpus-webis-tldr-17.zip
 
 # Copy modified configuration files into Hadoop configuration directory
-RUN mv hadoopfiles-main/core-site.xml /hadoop-3.3.6/etc/hadoop/core-site.xml
-RUN mv hadoopfiles-main/hdfs-site.xml /hadoop-3.3.6/etc/hadoop/hdfs-site.xml
+COPY core-site.xml /hadoop-3.3.6/etc/hadoop/core-site.xml
+COPY hdfs-site.xml /hadoop-3.3.6/etc/hadoop/hdfs-site.xml
 RUN rm *.zip
 # Format HDFS and start NameNode
 RUN /hadoop-3.3.6/bin/hdfs namenode -format && \
