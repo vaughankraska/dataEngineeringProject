@@ -6,6 +6,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
 import matplotlib.pyplot as plt
+from pyspark.sql.functions import explode, split, desc, col, lower, when, collect_list
+# from pyspark.ml.feature import StopWordsRemover
+
 
 start_time = time.time()
 # Create a Spark session
@@ -37,13 +40,14 @@ spark_context = spark.sparkContext
 # json_file_path = 'new_small_corpus-webis-tldr-17.json'
 # df = spark.read.json(f"hdfs://192.168.2.250:9000/{json_file_path}")
 
-
-from pyspark.sql.functions import explode, split, desc, col, lower, when
-from pyspark.ml.feature import StopWordsRemover
 # Specify the path to your large JSON file
 json_file_path = 'new_small_corpus-webis-tldr-17.json'
 
 df = spark.read.json(json_file_path)
+
+############################################################
+#subreddit_group_frequencies = df.groupBy("subreddit").count().sort(desc("count"))
+############################################################
 
 # print(df.take(1))
 # Explode the array of words in the "content" column
@@ -73,25 +77,58 @@ df_filtered = df_exploded_lower.filter(~col("word").rlike("[^a-zA-Z0-9]")).filte
 
 ## filter out swear words
 df_swear_list = ['anal', 'anus', 'arse', 'ass', 'balls', 'ballsack', 'bastard', 'biatch', 'bitch', 'bloody', 'blow job', 'blowjob', 'bollock', 'bollok', 'boner', 'boob', 'bugger', 'bum', 'butt', 'buttplug', 'clitoris', 'cock', 'coon', 'crap', 'cunt', 'damn', 'dick', 'dildo', 'dyke', 'f u c k', 'fag', 'feck', 'felching', 'fellate', 'fellatio', 'flange', 'fuck', 'fudge packer', 'fudgepacker', 'God damn', 'Goddamn', 'hell', 'homo', 'jerk', 'jizz', 'knob end', 'knobend', 'labia', 'lmao', 'lmfao', 'muff', 'nigga', 'nigger', 'omg', 'penis', 'piss', 'poop', 'prick', 'pube', 'pussy', 'queer', 's hit', 'scrotum', 'sex', 'sh1t', 'shit', 'slut', 'smegma', 'spunk', 'tit', 'tosser', 'turd', 'twat', 'vagina', 'wank', 'whore', 'wtf']
-df_filtered_swearWords = df_filtered.filter(col("word").isin(df_swear_list))
-# df_filtered_stopWords.take(10)
+df_filtered_swearWords = df_filtered.filter(col("word").isin(df_swear_list)).select("subreddit", "word")
+# df_filtered_swearWords.take(10)
 
-word_frequencies = df_filtered_swearWords.groupBy("word").count().sort(desc("count"))
+word_frequencies = df_filtered_swearWords.groupBy("subreddit").agg(collect_list("word").alias("curse_words"))
 # Show the top words and their frequencies
+# print()
 # word_frequencies.show()
+#Explode the array of 'curse_words' to have one word per row
+df_exploded1 = word_frequencies.select("subreddit", explode("curse_words").alias("word"))
+# pdf = df_exploded1.take(10)
+# pdf
+result_list = df_exploded1.groupBy("subreddit","word").count().sort(desc("count"))
+# result_list
 
-# # Convert PySpark DataFrame to Pandas DataFrame for local plotting
-# pandas_df = word_frequencies.limit(10).toPandas()
+######################################################################
+## Storing the results into dictionary
+# result_dict = {}
 
-# # Plot the top word frequencies
-# plt.figure(figsize=(10, 6))
-# plt.bar(pandas_df["word"], pandas_df["count"])
-# plt.xlabel("Words")
-# plt.ylabel("Frequency")
-# plt.title("Top Swear word Frequencies")
-# plt.xticks(rotation=45, ha="right")
-# plt.tight_layout()
-# plt.show()
+# # Iterate through the rows and build the dictionary
+# for row in result_list:
+#     subreddit = row['subreddit']
+#     word = row['word']
+#     count = row['count']
+
+#     # Check if the subreddit key exists, if not, create it
+#     if subreddit not in result_dict:
+#         result_dict[subreddit] = {}
+
+#     # Add or update the count for the specific word
+#     result_dict[subreddit][word] = count
+
+# # Print the resulting dictionary
+# result_dict
+
+######################################################################
+## Plot the above dictionary
+# for subreddit, word_counts in result_dict.items():
+#     words = list(word_counts.keys())
+#     counts = list(word_counts.values())
+
+#     plt.figure(figsize=(10, 6))
+#     plt.bar(words, counts, color='blue')
+#     plt.title(f'Word Frequencies for Subreddit: {subreddit}')
+#     plt.xlabel('Words')
+#     plt.ylabel('Frequency')
+#     plt.xticks(rotation=45, ha='right')
+#     plt.tight_layout()
+#     plt.show()
+
+######################################################################
+
+
 end_time = time.time()
 ### Time calculating and store results in csv
 elapsed_time = end_time - start_time
@@ -99,7 +136,7 @@ print(f"Processing time: {elapsed_time} seconds")
 
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-word_frequencies.write.csv(f'word_frequencies_{timestamp}.csv', header=True, mode='overwrite')
+result_list.write.csv(f'curse_word_frequencies_{timestamp}.csv', header=True, mode='overwrite')
 
 # Save processing time to a CSV file using PySpark with timestamp
 time_results = spark.createDataFrame([(timestamp, elapsed_time)], ["timestamp", "processing_time"])
