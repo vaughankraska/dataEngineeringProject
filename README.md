@@ -42,7 +42,11 @@ docker compose down
 # For submitting python scripts to VM's spark master:
 - On your local machine, set up port forwarding to the VM
 ```bash
-ssh -i ~/path/to/your/ssh/dir/Group_17_project.pem -L 8080:localhost:8080 -L 9870:localhost:9870 -L 7077:localhost:7077 -L 9000:localhost:9000 ubuntu@130.238.28.94
+ssh -i ~/path/to/your/ssh/dir/Group_17_project.pem -L 8080:localhost:8080 \
+        -L 9870:localhost:9870 \
+        -L 7077:localhost:7077 \
+        -L 9000:localhost:9000 \
+        ubuntu@130.238.28.94
 ```
 - Start a python notebook and run something like this to create a session:
 ```python
