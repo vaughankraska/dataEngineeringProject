@@ -13,6 +13,7 @@ RUN python3 -m pip install jupyterlab
 
 WORKDIR /app
 COPY test.ipynb .
+COPY finn.ipynb .
 EXPOSE 4040-4060 9999 8888 10005
 
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root"]

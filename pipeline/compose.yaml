@@ -42,11 +42,11 @@ services:
     build: spark
     deploy:
       mode: replicated
-      replicas: 4 # choose how many replicas we want for this
+      replicas: 5 # choose how many replicas we want for this
       resources:
         limits:
-          cpus: '1.00'
-          memory: 2gb
+          cpus: '2.00'
+          memory: 4gb
     depends_on:
       - spark-master
     command: spark/sbin/start-worker.sh spark://spark-master:7077
