@@ -46,6 +46,7 @@ ssh -i ~/path/to/your/ssh/dir/Group_17_project.pem -L 8080:localhost:8080 \
         -L 9870:localhost:9870 \
         -L 7077:localhost:7077 \
         -L 9000:localhost:9000 \
+        -L 8888:localhost:8888 \
         ubuntu@130.238.28.94
 ```
 - Start a python notebook and run something like this to create a session:
@@ -55,7 +56,7 @@ from pyspark.sql.functions import *
 
 spark_session = SparkSession\
         .builder\
-        .master("spark://localhost:7077") \
+        .master("spark://spark-master:7077") \
         .appName("tessst")\
         .config("spark.dynamicAllocation.enabled", True)\
         .config("spark.dynamicAllocation.shuffleTracking.enabled",True)\
