@@ -19,14 +19,14 @@ services:
   spark-master:
     build: spark
     container_name: spark-master
-#    deploy:
-#      resources: # setting these to be pretty low becuase I dont know what hardware yall have (we can make all this bigger on our cloud vm)
+    deploy:
+      resources: # setting these to be pretty low becuase I dont know what hardware yall have (we can make all this bigger on our cloud vm)
 #        reservations: # reserves hardware (minimums)
 #          cpus: '1.00'
-#          memory: 4gb
-#        limits: # limits hardware (maximum)
-#          cpus: '2.0'
-#          memory: 8gb
+#          memory: 2gb
+        limits: # limits hardware (maximum)
+          cpus: '1.0'
+          memory: 2gb
     ports:
       - "8080:8080"
       - "7077:7077"
@@ -37,11 +37,11 @@ services:
     build: spark
     deploy:
       mode: replicated
-      replicas: 1 # choose how many replicas we want for this
-#      resources:
-#        limits:
-#          cpus: '2.00'
-#          memory: 4gb
+      replicas: 4 # choose how many replicas we want for this
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2gb
     depends_on:
       - spark-master
     command: spark/sbin/start-worker.sh spark://spark-master:7077
