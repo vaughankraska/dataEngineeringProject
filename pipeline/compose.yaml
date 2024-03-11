@@ -4,7 +4,7 @@ services:
     container_name: driver
     deploy:
       resources:
-        reservations:
+        limits:
           cpus: "1.00"
           memory: 2gb
     ports:
@@ -17,6 +17,11 @@ services:
     tty: true
     build: file-system
     container_name: hdfs
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 2gb
     privileged: true
     ports:
       - "9000:9000"
@@ -42,11 +47,11 @@ services:
     build: spark
     deploy:
       mode: replicated
-      replicas: 4 # choose how many replicas we want for this
-      resources:
-        limits:
-          cpus: '2.00'
-          memory: 2gb
+      replicas: 1
+#      resources:
+#        limits:
+#          cpus: '1.25'
+#          memory: 1gb
     depends_on:
       - spark-master
     command: spark/sbin/start-worker.sh spark://spark-master:7077
