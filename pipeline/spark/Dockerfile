@@ -2,7 +2,7 @@
 # NOTE: we can change this to use the official docker image at https://hub.docker.com/r/apache/spark-py/tags
 FROM ubuntu:22.04
 
-RUN apt-get update
+RUN apt-get update --fix-missing
 RUN apt-get -y upgrade
 RUN apt-get install -y python3 python3-pip
 RUN pip3 install --upgrade pip
