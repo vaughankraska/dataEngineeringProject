@@ -1,4 +1,5 @@
 # Data engineering group project 2024
+<i>authors: Finn Vaughankraska and Oscar Boman (@osbo8060)</i>
 ### note: Running the project will download a ~20GB data file automatically.
 ## Dataset
 ```text
