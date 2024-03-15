@@ -1,6 +1,7 @@
 # Data engineering group project 2024
 <i>authors: Finn Vaughankraska and Oscar Boman (@osbo8060)</i>
-### note: Running the project will download a ~20GB data file automatically.
+### Warning: Running the project will download a ~20GB data file automatically. Also, the purpose of the query written in the pyspark was to find subreddits with hate speech and slurs. The file contains offensive language.
+
 ## Dataset
 ```text
 Data:
